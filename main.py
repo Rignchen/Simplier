@@ -34,9 +34,8 @@ def warn(message: str = "", is_error: bool = warn_error) -> None:
 warn("This language is still in development, so it may not work as expected", False)
 
 # Remove empty lines and comments, return error if line is too long, repeated or empty
-if len(code) > 1:code = code[1:]
-else: error("File is empty")
-for i in range(len(code)):
+if len(code) <= 1: error("File is empty")
+for i in range(1,len(code)):
 	if len(code[i]) > 60:
 		error("Line {} is so long".format(i + 1))
 	if not ";" in code[i] or code[i].strip().startswith(";"):
@@ -49,31 +48,45 @@ for i in range(len(code)):
 is_running = True
 variables = {} # name: value (tuple[type, value])
 functions = {} # name: code (list[str])
-curent_line = -1
+curent_line = 0
 
 # define the functions
 def is_value_valid(value: str, type: str) -> tuple[bool,str]:
 	"""return True if the value is valid for the given type"""
 	match type:
 		case "'": # character
-			if len(value) > 1: return False, "' on {}/{} is too long".format(curent_line, curent_word)
+			if len(value) > 1: return False, "' on line {} is too long".format(curent_line, curent_word)
 			return (True, "")
 		case "42": # integer
-			if not value.isdigit(): return False, "42 on {}/{} is not a number".format(curent_line, curent_word)
+			if not value.isdigit(): return False, "42 on line {} is not a number".format(curent_line, curent_word)
 			value = int(value)
-			if not 0 <= value <= 255: return False, "42 on {}/{} is not in range 0-255".format(curent_line, curent_word)
+			if not 0 <= value <= 255: return False, "42 on line {} is not in range 0-255".format(curent_line, curent_word)
 			return (True, "")
 		case "3.14": # float
-			if not value.replace(".", "", 1).isdigit(): return False, "3.14 on {}/{} is not a number".format(curent_line, curent_word)
+			test = value.replace(".", "", 1)
+			if test.startswith("-"): test = test[1:]
+			if not test.isdigit(): return False, "3.14 on line {} is not a number".format(curent_line, curent_word)
 			value = float(value)
-			if not -128 <= value <= 127: return False, "3.14 on {}/{} is not in range -128-127".format(curent_line, curent_word)
+			if not -128 <= value <= 127: return False, "3.14 on line {} is not in range -128 - 127".format(curent_line, curent_word)
 			return (True, "")
 		case "?": # boolean
 			if value == "yes" or value == "no": return (True, "")
-			else: return False, "yes on {}/{} is not a boolean".format(curent_line, curent_word)
-		case _: return False, "Unknown type {}/{} on line".format(type, curent_line, curent_word)
+			else: return False, "yes on line {} is not a boolean".format(curent_line, curent_word)
+		case _: return False, "Unknown type {} on line".format(type, curent_line, curent_word)
 
 while is_running and curent_line + 1 < len(code):
 	curent_line += 1
 	curent_word = 0
 	line = code[curent_line]
+	words = line.split(" ")
+
+	match words[0]:
+		case "var": # define a variable
+			#syntax: var <type> <name> <value>
+			if len(words) != 4: error("var on line {} must have 3 arguments".format(curent_line))
+			if words[2] in variables: error("Variable {} is already defined".format(words[2]))
+			test, msg = is_value_valid(words[3], words[1])
+			if not test: error(msg)
+			else: variables[words[2]] = (words[1], words[3])
+	
+	print(variables)
