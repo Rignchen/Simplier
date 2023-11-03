@@ -51,6 +51,28 @@ variables = {} # name: value (tuple[type, value])
 functions = {} # name: code (list[str])
 curent_line = -1
 
+# define the functions
+def is_value_valid(value: str, type: str) -> tuple[bool,str]:
+	"""return True if the value is valid for the given type"""
+	match type:
+		case "'": # character
+			if len(value) > 1: return False, "' on {}/{} is too long".format(curent_line, curent_word)
+			return (True, "")
+		case "42": # integer
+			if not value.isdigit(): return False, "42 on {}/{} is not a number".format(curent_line, curent_word)
+			value = int(value)
+			if not 0 <= value <= 255: return False, "42 on {}/{} is not in range 0-255".format(curent_line, curent_word)
+			return (True, "")
+		case "3.14": # float
+			if not value.replace(".", "", 1).isdigit(): return False, "3.14 on {}/{} is not a number".format(curent_line, curent_word)
+			value = float(value)
+			if not -128 <= value <= 127: return False, "3.14 on {}/{} is not in range -128-127".format(curent_line, curent_word)
+			return (True, "")
+		case "?": # boolean
+			if value == "yes" or value == "no": return (True, "")
+			else: return False, "yes on {}/{} is not a boolean".format(curent_line, curent_word)
+		case _: return False, "Unknown type {}/{} on line".format(type, curent_line, curent_word)
+
 while is_running and curent_line + 1 < len(code):
 	curent_line += 1
 	curent_word = 0
