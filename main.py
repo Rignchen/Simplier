@@ -15,6 +15,12 @@ This language is interpreted by the Simplier Interpreter, which is written in Py
 ## interpreter settings
 warn_error = False # if True, warnings will be treated as errors
 
+## code
+file_path = "test.simple" #input("Enter the file path: ")
+if not file_path.endswith(".simple"): raise Exception("File must be a .simple file")
+
+with open(file_path, "r") as file: code = file.read().split("\n")
+
 def error(message: str = "An unknow error occured") -> None:
 	"""print the error message in red and exit the program"""
 	print("\033[91mError: " + message + "\033[0m")
