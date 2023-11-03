@@ -30,3 +30,17 @@ def warn(message: str = "", is_error: bool = warn_error) -> None:
 	if message == "": error("An unknow warning occured")
 	elif is_error: error(message + " (warn -> error)")
 	else: print("\033[93mWarning: " + message + "\033[0m")
+
+warn("This language is still in development, so it may not work as expected", False)
+
+# Remove empty lines and comments, return error if line is too long, repeated or empty
+if len(code) > 1:code = code[1:]
+else: error("File is empty")
+for i in range(len(code)):
+	if len(code[i]) > 60:
+		error("Line {} is so long".format(i + 1))
+	if not ";" in code[i] or code[i].strip().startswith(";"):
+		error("Line {} is empty".format(i + 1))
+	code[i] = code[i][:code[i].index(";")] # remove comments
+	if len(code[i].split(" ")) > 1 and code[i] in code[:i]:
+		error("Line {} is repeated".format(i + 1))
