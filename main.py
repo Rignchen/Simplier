@@ -11,3 +11,16 @@ Some of the features of this language include:
 - Character are given using their ASCII value
 This language is interpreted by the Simplier Interpreter, which is written in Python.
 """
+
+## interpreter settings
+warn_error = False # if True, warnings will be treated as errors
+
+def error(message: str = "An unknow error occured") -> None:
+	"""print the error message in red and exit the program"""
+	print("\033[91mError: " + message + "\033[0m")
+	exit()
+def warn(message: str = "", is_error: bool = warn_error) -> None:
+	"""print the warning message in yellow, unless warn_error is True"""
+	if message == "": error("An unknow warning occured")
+	elif is_error: error(message + " (warn -> error)")
+	else: print("\033[93mWarning: " + message + "\033[0m")
