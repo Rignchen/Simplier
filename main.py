@@ -31,6 +31,7 @@ def stop():
 	"""stop the program"""
 	global is_running
 	is_running = False
+	exit()
 def error(message: str = "An unknow error occured on line {}".format(curent_line)) -> None:
 	"""print the error message in red and exit the program"""
 	print("\033[91mError: " + message + "\033[0m")
@@ -84,7 +85,9 @@ def get_value(value: str, type: str):
 	if not test: error(msg)
 	else:
 		match type:
-			case "'": return str(value)
+			case "'":
+				if len(value) == 1:return str(value)
+				else: return " "
 			case "42": return int(value)
 			case "3.14": return float(value)
 			case "?": return value == "yes"
@@ -149,3 +152,8 @@ while is_running and curent_line -1 < len(code):
 			else: 
 				if variables[words[1]][0] == "42": value = int(float(value))
 				variables[words[1]] = (variables[words[1]][0], str(value))
+		case "say": # print a value
+			#syntax: say <value> <value> ...
+			say = ""
+			for i in range(1, len(words)): say += str(get_value(words[i], "'"))
+			print(say)
