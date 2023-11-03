@@ -44,3 +44,14 @@ for i in range(len(code)):
 	code[i] = code[i][:code[i].index(";")] # remove comments
 	if len(code[i].split(" ")) > 1 and code[i] in code[:i]:
 		error("Line {} is repeated".format(i + 1))
+
+# define the variables
+is_running = True
+variables = {} # name: value (tuple[type, value])
+functions = {} # name: code (list[str])
+curent_line = -1
+
+while is_running and curent_line + 1 < len(code):
+	curent_line += 1
+	curent_word = 0
+	line = code[curent_line]
