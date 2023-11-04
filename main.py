@@ -13,9 +13,11 @@ This language is interpreted by the Simplier Interpreter, which is written in Py
 
 ## interpreter settings
 warn_error = False # if True, warnings will be treated as errors
+debug_mode = False # if True, the interpreter will print information about what it's doing
+debug_mode_step = False # if True, the interpreter will wait for the user to press enter before executing the next line
 
 ## code
-file_path = "test.simple" #input("Enter the file path: ")
+file_path = input("Enter the file path: ")
 if not file_path.endswith(".simple"): raise Exception("File must be a .simple file")
 
 with open(file_path, "r") as file: code = file.read().split("\n")
@@ -112,6 +114,22 @@ def run(words: list[str]) -> None:
 			if not test: error(msg)
 			elif get_value(words[1], "42") <= 1: error("Can't go to line {} from line {}".format(get_value(words[1], "42"), curent_line))
 			else: curent_line = get_value(words[1], "42") - 1
+		case "fn": # define a function
+			#syntax: fn <name>
+			if len(words) != 2: error("fn on line {} must have 1 arguments".format(curent_line))
+			#get the position of the end of the function
+			for i in range(curent_line -1, len(code)):
+				if code[i]=="end": break
+			else: error("Function {} on line {} is not closed".format(words[1], curent_line))
+			functions[words[1]] = code[curent_line-1:i]
+			curent_line = i + 2
+		case "end": # end a function, if should never be executed, if it is, it's an error
+			error("end on line {} should never be executed".format(curent_line))
+		case "call": # call a function
+			#syntax: call <name>
+			if len(words) != 2: error("call on line {} must have 1 arguments".format(curent_line))
+			if not words[1] in functions: error("Function {} is not defined on line {}".format(words[1], curent_line))
+			for line in functions[words[1]]: run(line.split(" "))
 
 # define the functions
 def is_value_valid(value: str, type: str) -> tuple[bool,str]:
@@ -195,6 +213,9 @@ while is_running and curent_line -1 < len(code):
 	line = code[curent_line-2]
 	words = line.split(" ")
 
-	print(curent_line)
+	if debug_mode:print(curent_line)
 
 	run(words)
+
+	if debug_mode: print("Variables: " + str(variables))
+	if debug_mode_step: input()
