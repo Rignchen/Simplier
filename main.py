@@ -56,6 +56,54 @@ for i in range(len(code)):
 	if len(code[i].split(" ")) > 1 and code[i] in code[:i]:
 		error("Line {} is repeated".format(i + 2))
 
+# main function
+def run(words: list[str]) -> None:
+	global curent_line, curent_word
+	match words[0]:
+		case "var": # define a variable
+			#syntax: var <type> <name> <value>
+			if len(words) != 4: error("var on line {} must have 3 arguments".format(curent_line))
+			if words[2] in variables: error("Variable {} is already defined".format(words[2]))
+			test, msg = is_value_valid(words[3], words[1])
+			if not test: error(msg)
+			else: variables[words[2]] = (words[1], words[3])
+		case "set": # set a variable
+			#syntax: set <name> <value>
+			value = calculate(words[2:], variables[words[1]][0])
+			if not words[1] in variables: error("Variable {} is not defined".format(words[1]))
+			test, msg = is_value_valid(value, variables[words[1]][0])
+			if not test: error(msg)
+			else: 
+				if variables[words[1]][0] == "42": value = int(float(value))
+				variables[words[1]] = (variables[words[1]][0], str(value))
+		case "say": # print a value
+			#syntax: say <value> <value> ...
+			say = ""
+			for i in range(1, len(words)): say += str(get_value(words[i], "'"))
+			print(say, end="")
+		case "in": # ask for input
+			#syntax: in <type> <name> [<name>... if type = ']
+			for i in range(2, len(words)):
+				if words[i] not in variables: error("Variable {} is not defined on line {}".format(words[i], curent_line))
+				elif variables[words[i]][0] != words[1]: error("Variable {} is not a {} on line {}".format(words[i], words[1], curent_line))
+			inp = input()
+			match words[1]:
+				case "'":
+					length = len(inp)
+					if len(words) -2 < length: error("Not enough place to store the input on line {}".format(curent_line))
+					for i in range(length):
+						test, msg = is_value_valid(str(ord(inp[i])), "'")
+						if not test: error(msg)
+						else: variables[words[i+2]] = ("'", str(ord(inp[i])))
+				case "42"|"3.14"|"?":
+					test, msg = is_value_valid(inp, words[1])
+					if not test: error(msg)
+					else: variables[words[2]] = (words[1], get_value(inp, words[1]))
+				case _: error("Unknown type {} on line {}".format(words[1], curent_line))
+		case "if": # if statement
+			#syntax: if <value:?>
+			if get_value(words[1], "?"): run(words[2:])
+
 # define the functions
 def is_value_valid(value: str, type: str) -> tuple[bool,str]:
 	"""return True if the value is valid for the given type"""
@@ -119,8 +167,8 @@ def calculate(values: list[str], type: str):
 							case "^": calc = [get_value(calc[0], type) ** get_value(calc[2], type)]
 							case _: error("Unknown operator between {} {} on line {}".format(type, calc[1], curent_line))
 					case "?":
-						if calc[1] == "&": calc = [get_value(calc[0], type) and get_value(calc[2], type)]
-						elif calc[1] == "/": calc = [get_value(calc[0], type) or get_value(calc[2], type)]
+						if calc[1] == "&": calc = ["yes" if get_value(calc[0], type) and get_value(calc[2], type) else "no"]
+						elif calc[1] == "/": calc = ["yes" if get_value(calc[0], type) or get_value(calc[2], type) else "no"]
 						else: error("Unknown operator between ? {} on line {}".format(calc[1], curent_line))
 					case _: return False, "Unknown type {} on line".format(type, curent_line, curent_word)
 			except ZeroDivisionError: error("Can't divide by 0 on line {}".format(curent_line))
@@ -137,44 +185,4 @@ while is_running and curent_line -1 < len(code):
 	line = code[curent_line-2]
 	words = line.split(" ")
 
-	match words[0]:
-		case "var": # define a variable
-			#syntax: var <type> <name> <value>
-			if len(words) != 4: error("var on line {} must have 3 arguments".format(curent_line))
-			if words[2] in variables: error("Variable {} is already defined".format(words[2]))
-			test, msg = is_value_valid(words[3], words[1])
-			if not test: error(msg)
-			else: variables[words[2]] = (words[1], words[3])
-		case "set": # set a variable
-			#syntax: set <name> <value>
-			value = calculate(words[2:], variables[words[1]][0])
-			if not words[1] in variables: error("Variable {} is not defined".format(words[1]))
-			test, msg = is_value_valid(value, variables[words[1]][0])
-			if not test: error(msg)
-			else: 
-				if variables[words[1]][0] == "42": value = int(float(value))
-				variables[words[1]] = (variables[words[1]][0], str(value))
-		case "say": # print a value
-			#syntax: say <value> <value> ...
-			say = ""
-			for i in range(1, len(words)): say += str(get_value(words[i], "'"))
-			print(say, end="")
-		case "in": # ask for input
-			#syntax: in <type> <name> [<name>... if type is ']
-			for i in range(2, len(words)):
-				if words[i] not in variables: error("Variable {} is not defined on line {}".format(words[i], curent_line))
-				elif variables[words[i]][0] != words[1]: error("Variable {} is not a {} on line {}".format(words[i], words[1], curent_line))
-			inp = input()
-			match words[1]:
-				case "'":
-					length = len(inp)
-					if len(words) -2 < length: error("Not enough place to store the input on line {}".format(curent_line))
-					for i in range(length):
-						test, msg = is_value_valid(str(ord(inp[i])), "'")
-						if not test: error(msg)
-						else: variables[words[i+2]] = ("'", str(ord(inp[i])))
-				case "42"|"3.14"|"?":
-					test, msg = is_value_valid(inp, words[1])
-					if not test: error(msg)
-					else: variables[words[2]] = (words[1], get_value(inp, words[1]))
-				case _: error("Unknown type {} on line {}".format(words[1], curent_line))
+	run(words)
