@@ -1,0 +1,6 @@
+hello world! <- this line is a comment, as well as everything after the ;
+fn main;
+say 72 101 108 108 111 32; print "Hello"
+say 119 111 114 108 100 33; print "world!"
+end;
+call main; print "Hello world!" by running the main function

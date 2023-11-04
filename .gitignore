@@ -1,6 +1,6 @@
-# every .simple file except the ones in the "__" directory
+# every .simple file except the ones in the "code_demo" directory
 *.simple
-
+!code_demo/*.simple
 
 
 ## Basic python gitignore
