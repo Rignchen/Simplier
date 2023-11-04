@@ -232,10 +232,10 @@ def calculate(values: list[str], type: str):
 						elif calc[0].startswith("$") and calc[2].startswith("$"):
 							#if there's a varriable, test if the value and type are the same
 							match calc[1]:
-								case "=": calc = ["yes" if get_variable(calc[0]) == get_variable(calc[2]) else "no"]
-								case "!": calc = ["yes" if get_variable(calc[0]) != get_variable(calc[2]) else "no"]
-								case ">": calc = ["yes" if get_variable(calc[0]) > get_variable(calc[2]) else "no"]
-								case "<": calc = ["yes" if get_variable(calc[0]) < get_variable(calc[2]) else "no"]
+								case "=": calc = ["yes" if get_variable(calc[0][1:]) == get_variable(calc[2][1:]) else "no"]
+								case "!": calc = ["yes" if get_variable(calc[0][1:]) != get_variable(calc[2][1:]) else "no"]
+								case ">": calc = ["yes" if get_variable(calc[0][1:]) > get_variable(calc[2][1:]) else "no"]
+								case "<": calc = ["yes" if get_variable(calc[0][1:]) < get_variable(calc[2][1:]) else "no"]
 								case _: error("Unknown operator between {} {} on line {}".format(type, calc[1], curent_line))
 					case _: return False, "Unknown type {} on line".format(type, curent_line)
 			except ZeroDivisionError: error("Can't divide by 0 on line {}".format(curent_line))

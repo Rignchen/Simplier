@@ -1,0 +1,13 @@
+default:
+	var <type> <name> <value>
+	set <name> <value> [<operation> <value>...]
+	say <value> <value> ...
+	if <value:?> <command>
+	go <value:42>
+	fn <name>
+	call <name>
+	lib <name>
+	in <type> <name> [<name>... if type = ']
+lib time:
+	now <varriable:3.14>
+	zzz <varriable:42|3.14>

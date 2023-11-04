@@ -1,0 +1,8 @@
+
+var 42 a 0;
+var 42 1 1;
+var ? b no;
+in 42 a;
+set b $a = $1;
+say $a;
+if $b go 6;
