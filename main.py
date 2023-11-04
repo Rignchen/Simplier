@@ -219,13 +219,25 @@ def calculate(values: list[str], type: str):
 							case "/": calc = [get_value(calc[0], type) / get_value(calc[2], type)]
 							case "%": calc = [get_value(calc[0], type) % get_value(calc[2], type)]
 							case "^": calc = [get_value(calc[0], type) ** get_value(calc[2], type)]
+							case ".-": calc = [min(get_value(calc[0], type), get_value(calc[2], type))]
+							case ".+": calc = [max(get_value(calc[0], type), get_value(calc[2], type))]
 							case _: error("Unknown operator between {} {} on line {}".format(type, calc[1], curent_line))
 					case "?":
-						if calc[1] == "&": calc = ["yes" if get_value(calc[0], type) and get_value(calc[2], type) else "no"]
-						elif calc[1] == "/": calc = ["yes" if get_value(calc[0], type) or get_value(calc[2], type) else "no"]
-						elif calc[1] == "*": calc = ["yes" if get_value(calc[0], type) == get_value(calc[2], type) else "no"]
-						else: error("Unknown operator between ? {} on line {}".format(calc[1], curent_line))
-					case _: return False, "Unknown type {} on line".format(type, curent_line, curent_word)
+						if is_value_valid(calc[1], "?")[0]:
+							match calc[1]:
+								case "&": calc = ["yes" if get_value(calc[0], type) and get_value(calc[2], type) else "no"]
+								case "/": calc = ["yes" if get_value(calc[0], type) or get_value(calc[2], type) else "no"]
+								case "*": calc = ["yes" if get_value(calc[0], type) == get_value(calc[2], type) else "no"]
+								case _: error("Unknown operator between ? {} on line {}".format(calc[1], curent_line))
+						elif calc[0].startswith("$") and calc[2].startswith("$"):
+							#if there's a varriable, test if the value and type are the same
+							match calc[1]:
+								case "=": calc = ["yes" if get_variable(calc[0]) == get_variable(calc[2]) else "no"]
+								case "!": calc = ["yes" if get_variable(calc[0]) != get_variable(calc[2]) else "no"]
+								case ">": calc = ["yes" if get_variable(calc[0]) > get_variable(calc[2]) else "no"]
+								case "<": calc = ["yes" if get_variable(calc[0]) < get_variable(calc[2]) else "no"]
+								case _: error("Unknown operator between {} {} on line {}".format(type, calc[1], curent_line))
+					case _: return False, "Unknown type {} on line".format(type, curent_line)
 			except ZeroDivisionError: error("Can't divide by 0 on line {}".format(curent_line))
 			except TypeError: error("Can't calculate {} and {} on line {}".format(calc[0], calc[2], curent_line))
 			except:
