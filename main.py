@@ -49,12 +49,12 @@ if len(code) > 1: code = code[1:]
 else:error("File is empty")
 for i in range(len(code)):
 	if len(code[i]) > 60:
-		error("Line {} is so long".format(i + 1))
+		error("Line {} is so long".format(i + 2))
 	if not ";" in code[i] or code[i].strip().startswith(";"):
-		error("Line {} is empty".format(i + 1))
+		error("Line {} is empty".format(i + 2))
 	code[i] = code[i][:code[i].index(";")] # remove comments
 	if len(code[i].split(" ")) > 1 and code[i] in code[:i]:
-		error("Line {} is repeated".format(i + 1))
+		error("Line {} is repeated".format(i + 2))
 
 # define the functions
 def is_value_valid(value: str, type: str) -> tuple[bool,str]:
@@ -62,8 +62,10 @@ def is_value_valid(value: str, type: str) -> tuple[bool,str]:
 	value = str(value)
 	match type:
 		case "'": # character
-			if len(value) > 1: return False, "' on line {} is too long".format(curent_line)
-			return (True, "")
+			try:
+				value = chr(int(value))
+				return (True, "")
+			except: return False, "'{}' on line {} is not an ascii value".format(value, curent_line)
 		case "42": # integer
 			try: value = int(float(value))
 			except: return False, "42 on line {} is not a number".format(curent_line)
@@ -86,9 +88,9 @@ def get_value(value: str, type: str):
 	else:
 		match type:
 			case "'":
-				if len(value) == 1:return str(value)
-				else: return " "
-			case "42": return int(value)
+				#return a character from its ascii value
+				return chr(int(value))
+			case "42": return int(float(value))
 			case "3.14": return float(value)
 			case "?": return value == "yes"
 def get_variable(name: str):
@@ -156,4 +158,23 @@ while is_running and curent_line -1 < len(code):
 			#syntax: say <value> <value> ...
 			say = ""
 			for i in range(1, len(words)): say += str(get_value(words[i], "'"))
-			print(say)
+			print(say, end="")
+		case "in": # ask for input
+			#syntax: in <type> <name> [<name>... if type is ']
+			for i in range(2, len(words)):
+				if words[i] not in variables: error("Variable {} is not defined on line {}".format(words[i], curent_line))
+				elif variables[words[i]][0] != words[1]: error("Variable {} is not a {} on line {}".format(words[i], words[1], curent_line))
+			inp = input()
+			match words[1]:
+				case "'":
+					length = len(inp)
+					if len(words) -2 < length: error("Not enough place to store the input on line {}".format(curent_line))
+					for i in range(length):
+						test, msg = is_value_valid(str(ord(inp[i])), "'")
+						if not test: error(msg)
+						else: variables[words[i+2]] = ("'", str(ord(inp[i])))
+				case "42"|"3.14"|"?":
+					test, msg = is_value_valid(inp, words[1])
+					if not test: error(msg)
+					else: variables[words[2]] = (words[1], get_value(inp, words[1]))
+				case _: error("Unknown type {} on line {}".format(words[1], curent_line))
