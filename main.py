@@ -7,7 +7,6 @@ Some of the features of this language include:
 - Maximum of 60 characters per line
 - Lines must end with ; and everything after it is ignored but still counted for the 60 character limit
 - No complex data types
-- Numbers in variables are between 0 and 255, Floats are between -128 and 127
 - Character are given using their ASCII value
 This language is interpreted by the Simplier Interpreter, which is written in Python.
 """
@@ -53,7 +52,7 @@ for i in range(len(code)):
 	if not ";" in code[i] or code[i].strip().startswith(";"):
 		error("Line {} is empty".format(i + 2))
 	code[i] = code[i][:code[i].index(";")] # remove comments
-	if len(code[i].split(" ")) > 1 and code[i] in code[:i]:
+	if len(code[i].split(" ")) > 2 and code[i] in code[:i]:
 		error("Line {} is repeated".format(i + 2))
 
 # main function
@@ -68,7 +67,7 @@ def run(words: list[str]) -> None:
 			if not test: error(msg)
 			else: variables[words[2]] = (words[1], words[3])
 		case "set": # set a variable
-			#syntax: set <name> <value>
+			#syntax: set <name> <value> [<value>...]
 			value = calculate(words[2:], variables[words[1]][0])
 			if not words[1] in variables: error("Variable {} is not defined".format(words[1]))
 			test, msg = is_value_valid(value, variables[words[1]][0])
@@ -83,6 +82,9 @@ def run(words: list[str]) -> None:
 			print(say, end="")
 		case "in": # ask for input
 			#syntax: in <type> <name> [<name>... if type = ']
+			if words[1] == "'":
+				if len(words) < 3: error("in on line {} must have at least 2 arguments".format(curent_line)) 
+			elif len(words) != 3: error("in on line {} must have 2 arguments".format(curent_line))
 			for i in range(2, len(words)):
 				if words[i] not in variables: error("Variable {} is not defined on line {}".format(words[i], curent_line))
 				elif variables[words[i]][0] != words[1]: error("Variable {} is not a {} on line {}".format(words[i], words[1], curent_line))
@@ -101,8 +103,15 @@ def run(words: list[str]) -> None:
 					else: variables[words[2]] = (words[1], get_value(inp, words[1]))
 				case _: error("Unknown type {} on line {}".format(words[1], curent_line))
 		case "if": # if statement
-			#syntax: if <value:?>
+			#syntax: if <value:?> <command>
 			if get_value(words[1], "?"): run(words[2:])
+		case "go": # go to a line
+			#syntax: go <value:42>
+			if len(words) != 2: error("go on line {} must have 1 argument".format(curent_line))
+			test, msg = is_value_valid(words[1], "42")
+			if not test: error(msg)
+			elif get_value(words[1], "42") <= 1: error("Can't go to line {} from line {}".format(get_value(words[1], "42"), curent_line))
+			else: curent_line = get_value(words[1], "42") - 1
 
 # define the functions
 def is_value_valid(value: str, type: str) -> tuple[bool,str]:
@@ -117,12 +126,10 @@ def is_value_valid(value: str, type: str) -> tuple[bool,str]:
 		case "42": # integer
 			try: value = int(float(value))
 			except: return False, "42 on line {} is not a number".format(curent_line)
-			if not 0 <= value <= 255: return False, "42 on line {} is not in range 0-255".format(curent_line)
 			return (True, "")
 		case "3.14": # float
 			try: value = float(value)
 			except: return False, "3.14 on line {} is not a number".format(curent_line)
-			if not -128 <= value <= 127: return False, "3.14 on line {} is not in range -128 - 127".format(curent_line)
 			return (True, "")
 		case "?": # boolean
 			if value == "yes" or value == "no": return (True, "")
@@ -147,7 +154,9 @@ def get_variable(name: str):
 	else: error("Variable {} is not defined".format(name))
 def calculate(values: list[str], type: str):
 	"""calculate the value of the given values"""
-	if len(values) == 1: return get_value(values[0], type)
+	if len(values) == 1: 
+		if type == "?": return "yes" if get_value(values[0], type) else "no"
+		return get_value(values[0], type)
 	elif (len(values)-1)%2 == 0 and len(values) >= 3:
 		index = 1
 		calc = [values[0]]
@@ -169,6 +178,7 @@ def calculate(values: list[str], type: str):
 					case "?":
 						if calc[1] == "&": calc = ["yes" if get_value(calc[0], type) and get_value(calc[2], type) else "no"]
 						elif calc[1] == "/": calc = ["yes" if get_value(calc[0], type) or get_value(calc[2], type) else "no"]
+						elif calc[1] == "*": calc = ["yes" if get_value(calc[0], type) == get_value(calc[2], type) else "no"]
 						else: error("Unknown operator between ? {} on line {}".format(calc[1], curent_line))
 					case _: return False, "Unknown type {} on line".format(type, curent_line, curent_word)
 			except ZeroDivisionError: error("Can't divide by 0 on line {}".format(curent_line))
@@ -184,5 +194,7 @@ while is_running and curent_line -1 < len(code):
 	curent_word = 0
 	line = code[curent_line-2]
 	words = line.split(" ")
+
+	print(curent_line)
 
 	run(words)
