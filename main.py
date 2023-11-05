@@ -13,7 +13,7 @@ This language is interpreted by the Simplier Interpreter, which is written in Py
 
 ## interpreter settings
 warn_error = False # if True, warnings will be treated as errors
-debug_mode = False # if True, the interpreter will print information about what it's doing
+debug_mode = True # if True, the interpreter will print information about what it's doing
 debug_mode_step = False # if True, the interpreter will wait for the user to press enter before executing the next line
 
 ## code
@@ -27,7 +27,7 @@ with open(file_path, "r") as file: code = file.read().split("\n")
 # define the variables
 function_names = ["var", "set", "say", "in", "if", "go", "fn", "end", "call", "lib"]
 is_running = True
-variables = {} # name: value (tuple[type, value])
+variables = {} # name: value (tuple[type, value])		{'a': ("'", "65"), 'b': ("42", "42"), 'c': ("3.14", "3.14"), 'd': ("?", "yes")}
 functions = {} # name: code (list[str])
 libs = {} # name: import
 curent_line = 1
@@ -52,6 +52,12 @@ def warn(message: str = "", is_error: bool = warn_error) -> None:
 	if message == "": error("An unknow warning occured")
 	elif is_error: error(message + " (warn -> error)")
 	else: print("\033[93mWarning: " + message + "\033[0m")
+def debug(message: str) -> None:
+	"""print the debug message in blue, unless debug_mode is False"""
+	if debug_mode: print("\033[94mDebug: " + message + "\033[0m")
+def iprint(message: str) -> None:
+	"""print the message in green, used to debug the interpreter"""
+	print("\033[92m" + message + "\033[0m")
 
 warn("This language is still in development, so it may not work as expected", False)
 
@@ -272,11 +278,11 @@ while is_running and curent_line -1 < len(code):
 	line = code[curent_line-2]
 	words = line.split(" ")
 
-	if debug_mode: print(curent_line)
+	debug("Line: {}".format(curent_line))
 
 	run(words)
 
-	if debug_mode: print("Variables: " + str(variables))
-	if debug_mode: print("Functions: " + str(functions))
-	if debug_mode: print("Library: " + str(libs))
+	debug("Variables: {}".format(variables))
+	debug("Functions: {}".format(functions))
+	debug("Library: {}".format(libs))
 	if debug_mode_step: input()
