@@ -167,7 +167,24 @@ def run(words: list[str]) -> None:
 				#syntax: call <name>
 				if len(words) != 2: error(f"call on line {curent_line} must have 1 arguments")
 				if not words[1] in functions: error(f"Function {words[1]} is not defined on line {curent_line}")
-				for line in functions[words[1]]: run(line.split(" "))
+				old_line, curent_line = curent_line, 1
+				function_name = words[1]
+				debug(f"start running function {function_name}")
+				while is_running and curent_line -1 < len(functions[function_name]):
+					curent_line += 1
+					line = functions[function_name][curent_line-2]
+					words = line.split(" ")
+
+					debug(f"Fn Line: {curent_line}")
+
+					run(words)
+
+					debug(f"Variables: {variables}")
+					debug(f"Functions: {functions}")
+					debug(f"Library: {libs}")
+					if debug_mode_step: input()
+				debug(f"end running function {function_name}")
+				curent_line = old_line
 			case "lib": # import a library
 				#syntax: lib <name>
 				if len(words) != 2: error(f"lib on line {curent_line} must have 1 arguments")
