@@ -13,17 +13,9 @@ This language is interpreted by the Simplier Interpreter, which is written in Py
 
 ## interpreter settings
 warn_error = False # if True, warnings will be treated as errors
-debug_mode = False # if True, the interpreter will print information about what it's doing
-debug_mode_step = False # if True, the interpreter will wait for the user to press enter before executing the next line
+debug_mode = True # if True, the interpreter will print information about what it's doing
+debug_mode_step = True # if True, the interpreter will wait for the user to press enter before executing the next line
 interpreter_debug_mode = False # if True, the interpreter will print even more information about what it's doing, use to debug the interpreter
-
-## code
-from os import system, name
-system("cls" if name == "nt" else "clear")
-file_path = input("Enter the file path: ")
-if not file_path.endswith(".simple"): raise Exception("File must be a .simple file")
-
-with open(file_path, "r") as file: code = file.read().split("\n")
 
 # define the variables
 function_names = ["var", "set", "say", "in", "if", "go", "fn", "end", "call", "lib"]
@@ -32,10 +24,6 @@ variables = {} # name: value (tuple[type, value])		{'a': ("'", "65"), 'b': ("42"
 functions = {} # name: code (list[str])
 libs = {} # name: import
 curent_line = 1
-
-#import
-from os import listdir
-from importlib import import_module
 
 # error and warning functions
 def stop():
@@ -62,6 +50,20 @@ def iprint(message: str) -> None:
 def tprint(message: str) -> None:
 	"""print the message in pink, used to debug the interpreter as a temporary print"""
 	print("\033[95m" + repr(message) + "\033[0m")
+
+#import
+from os import listdir
+from importlib import import_module
+
+## code
+from os import system, name
+system("cls" if name == "nt" else "clear")
+file_path = input("Enter the file path: ")
+if not file_path.endswith(".simple"): error	("File must be a .simple file")
+
+try: 
+	with open(file_path, "r") as file: code = file.read().split("\n")
+except FileNotFoundError: error(f"File {file_path} does not exist")
 
 warn("This language is still in development, so it may not work as expected", False)
 
