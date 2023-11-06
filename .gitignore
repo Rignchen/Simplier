@@ -1,7 +1,8 @@
 # every .simple file except the ones in the "code_demo" directory
 *.simple
 !code_demo/*.simple
-
+text_to_ascii.py
+**test*
 
 ## Basic python gitignore
 
