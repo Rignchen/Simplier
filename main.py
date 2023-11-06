@@ -17,6 +17,10 @@ debug_mode = True # if True, the interpreter will print information about what i
 debug_mode_step = True # if True, the interpreter will wait for the user to press enter before executing the next line
 interpreter_debug_mode = False # if True, the interpreter will print even more information about what it's doing, use to debug the interpreter
 
+#import
+from os import listdir, path, chdir
+from importlib import import_module
+
 # define the variables
 function_names = ["var", "set", "say", "in", "if", "go", "fn", "end", "call", "lib"]
 is_running = True
@@ -24,6 +28,7 @@ variables = {} # name: value (tuple[type, value])		{'a': ("'", "65"), 'b': ("42"
 functions = {} # name: code (list[str])
 libs = {} # name: import
 curent_line = 1
+local_path = path.dirname(path.realpath(__file__))
 
 # error and warning functions
 def stop():
@@ -51,10 +56,6 @@ def tprint(message: str) -> None:
 	"""print the message in pink, used to debug the interpreter as a temporary print"""
 	print("\033[95m" + repr(message) + "\033[0m")
 
-#import
-from os import listdir
-from importlib import import_module
-
 ## code
 from os import system, name
 system("cls" if name == "nt" else "clear")
@@ -64,6 +65,10 @@ if not file_path.endswith(".simple"): error	("File must be a .simple file")
 try: 
 	with open(file_path, "r") as file: code = file.read().split("\n")
 except FileNotFoundError: error(f"File {file_path} does not exist")
+
+# set the path of execution to the location of the file
+# this is to ensure that the file can be run from any location and won't mess up the import
+chdir(path.dirname(path.realpath(__file__)))
 
 warn("This language is still in development, so it may not work as expected", False)
 
@@ -167,7 +172,7 @@ def run(words: list[str]) -> None:
 				#syntax: lib <name>
 				if len(words) != 2: error(f"lib on line {curent_line} must have 1 arguments")
 				elif words[1] in libs: error(f"Library {words[1]} on line {curent_line} is allready imported")
-				elif words[1] + ".py" in listdir("simple_lib"):
+				elif words[1] + ".py" in listdir(f"simple_lib"):
 					libs[words[1]] = import_module(f"simple_lib.{words[1]}")
 				else: error(f"Library {words[1]} does not exist")
 			case _: # if the function is not a default one, may be a library function
