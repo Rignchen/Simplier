@@ -129,7 +129,7 @@ def run(words: list[str]) -> None:
 							if not test: error(msg)
 							else: variables[words[i+2]] = ("'", str(ord(inp[i])))
 					case "42"|"3.14":
-						variables[words[2]] = (words[1], get_value(inp, words[1]))
+						variables[words[2]] = (words[1], str(get_value(inp, words[1])))
 					case "?":
 						test, msg = is_value_valid(inp, "?")
 						if test:variables[words[2]] = ("?", inp)

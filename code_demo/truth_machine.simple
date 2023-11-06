@@ -5,4 +5,4 @@ var ? b no;
 in 42 a;
 set b $a = $1;
 say $a;
-if $b go 6;
+if $b go 7;
