@@ -373,29 +373,29 @@ def calculate(values: list[str], type: str):
 def lib_import_var() -> dict:
 	"""return all variables and functions of the interpreter"""
 	return {
-				# debug
-				"debug_mode": debug_mode,
-				"debug_mode_step": debug_mode_step,
-				"interpreter_debug_mode": interpreter_debug_mode,
-				# functions
-				"stop": stop,
-				"error": error,
-				"warn": warn,
-				"debug": debug,
-				"iprint": iprint,
-				"tptint": tprint,
-				"run": run,
-				"is_value_valid": is_value_valid,
-				"get_value": get_value,
-				"get_variable": get_variable,
-				"calculate": calculate,
-				"get_command": get_command,
-				# variables
-				"variables": variables,
-				"functions": functions,
-				"curent_line": curent_line,
-				"libs": libs,
-			}
+		# debug
+		"debug_mode": debug_mode,
+		"debug_mode_step": debug_mode_step,
+		"interpreter_debug_mode": interpreter_debug_mode,
+		# functions
+		"stop": stop,
+		"error": error,
+		"warn": warn,
+		"debug": debug,
+		"iprint": iprint,
+		"tprint": tprint,
+		"run": run,
+		"is_value_valid": is_value_valid,
+		"get_value": get_value,
+		"get_variable": get_variable,
+		"calculate": calculate,
+		"get_command": get_command,
+		# variables
+		"variables": variables,
+		"functions": functions,
+		"curent_line": curent_line,
+		"libs": libs,
+	}
 def get_command(commands: list[str], pos: int) -> None:
 	"""get the command and return it"""
 	if commands[pos].startswith("$"):

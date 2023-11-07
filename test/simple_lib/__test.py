@@ -9,8 +9,8 @@ def call(words: list[str],main: dict) -> None:
 	match words[0]:
 		case "test":
 			print("test")
-			main["tptint"]("test tprint")
-			main["tptint"](main["variables"])
+			main["tprint"]("test tprint")
+			main["tprint"](main["variables"])
 			main["variables"]["test"] = ("'","1")
-			main["tptint"](main["variables"])
+			main["tprint"](main["variables"])
 			main["warn"]("test warn")
