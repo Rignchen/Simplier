@@ -5,7 +5,7 @@ import time
 
 function_names = ["now", "zzz"]
 
-def init(main: dict[str,function]) -> None:
+def init(main: dict) -> None:
 	main["debug"]("loading time library")
 def call(words: list[str],main: dict) -> None:
 	match words[0]:

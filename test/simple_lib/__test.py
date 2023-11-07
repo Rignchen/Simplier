@@ -2,10 +2,9 @@
 time library for the simplier esoteric language
 """
 function_names = ["test"]
-print("test lib loaded")
 
-def init(main: dict[str,function]) -> None:
-	main["debug"]("loading test library")
+def init(main: dict) -> None:
+	print("test lib loaded")
 def call(words: list[str],main: dict) -> None:
 	match words[0]:
 		case "test":

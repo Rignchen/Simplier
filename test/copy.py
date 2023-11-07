@@ -16,7 +16,7 @@ files = [ # set -> in -> calcul -> bool -> if -> go -> function -> lib -> run
 	"run.simple",
 ]
 
-out = '#import\nfrom os import chdir, listdir\n\n# if in main folder, move to test folder\nif "test" in listdir(): chdir("test")\n\n# test files\nfile_list = ['
+out = '#import\nfrom os import chdir, listdir, name, system\n\nsystem("cls" if name == "nt" else "clear")\n\n# if in main folder, move to test folder\nif "test" in listdir(): chdir("test")\n\n# test files\nfile_list = ['
 for i in files: out += f'\n\t"{i}",'
 out += '\n]\n\n# interpreter\nfor file_path in file_list:\n\tprint(f"now testing {file_path}")'
 

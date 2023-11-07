@@ -7,7 +7,7 @@ this is a template for a library file
 
 function_names = []
 
-def init(main: dict[str,function]) -> None:
+def init(main: dict) -> None:
 	"""
 	this function is called when the library is loaded
 	main: dict with all the functions from the interpreter
