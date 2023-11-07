@@ -1,6 +1,5 @@
 
 var ' a 10;
 var ' b 97;
-var ' c 36;
-run say 1 2 3 $c $b;
-say 4 5 6;
+var ' $ 36;
+run say 1 2 3 $$ $b  4 5 6;

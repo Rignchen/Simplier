@@ -260,8 +260,8 @@ def run(words: list[str]) -> None:
 				i = 1
 				while i < len(words):
 					v = get_command(words, i)
-					temp.append(v[0])
-					i = v[1]
+					if v[0] != "":temp.append(v[0])
+					i = v[1] + 1
 				run(temp)
 			case _: # if the function is not a default one, may be a library function
 				error()
@@ -409,7 +409,7 @@ def get_command(commands: list[str], pos: int) -> None:
 			pos = v[1]
 			out += v[0]
 	else: out = commands[pos]
-	return (out, pos + 1)
+	return (out, pos)
 
 # run the code
 try:
