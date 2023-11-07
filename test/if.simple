@@ -1,0 +1,7 @@
+
+var ? a yes;
+var ? b no;
+if $a say 49 10;
+if $b say 50 10;
+set b ! $b;
+if $b say 51 10;

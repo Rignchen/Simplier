@@ -1,0 +1,17 @@
+
+var ' a 1;
+say $a 10;
+set a 2;
+say $a 10 0;
+var 42 b 1;
+say $b 10;
+set b 2;
+say $b 10 0;
+var 3.14 c 2.999;
+say $c 10;
+set c 10.1;
+say $c 10 0;
+var ? d no;
+say $d 10;
+set d yes;
+say $d 10 0;

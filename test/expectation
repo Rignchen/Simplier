@@ -1,0 +1,92 @@
+now testing set.simple
+Warning: This language is still in development, so it may not work as expected
+☺
+☻
+1
+2
+2.999
+10.1
+no
+yes
+now testing in.simple
+Warning: This language is still in development, so it may not work as expected
+': a
+a
+42: 1
+1
+3.14: 1
+1.0
+?: no
+no
+now testing calcul.simple
+Warning: This language is still in development, so it may not work as expected
+type 42
+3
+1
+2
+1
+2
+8
+3
+11
+type 3.14
+3.0
+1.0
+0.5
+1.0
+2.0
+8.0
+3.0
+11.4
+type ?
+no
+yes
+yes
+no
+now testing bool.simple
+Warning: This language is still in development, so it may not work as expected
+type 42
+no
+yes
+no
+yes
+type 3.14
+no
+yes
+no
+yes
+both
+no
+yes
+no
+yes
+end
+now testing if.simple
+Warning: This language is still in development, so it may not work as expected
+1
+3
+now testing go.simple
+Warning: This language is still in development, so it may not work as expected
+2
+3
+now testing function.simple
+Warning: This language is still in development, so it may not work as expected
+☺
+☻
+♥
+☺☻♥♦♣♠
+☺☻
+♣♠
+now testing lib.simple
+Warning: This language is still in development, so it may not work as expected
+test lib loaded
+test
+'test tprint'
+{}
+{'test': ("'", '1')}
+Warning: test warn
+☺
+now testing run.simple
+Warning: This language is still in development, so it may not work as expected
+☺☻♥
+♦♣♠

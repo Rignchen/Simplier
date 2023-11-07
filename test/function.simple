@@ -1,0 +1,18 @@
+
+fn pomme;
+say 1 10;
+say 2 10;
+say 3 10;
+end;
+fn poire;
+say 1 2 3 4 5 6 7 8 9 10;
+end;
+call pomme;
+call poire;
+fn banana;
+say 1 2 10;
+go 5;
+say 3 4 10;
+say 5 6 10;
+end;
+call banana;

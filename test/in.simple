@@ -1,0 +1,17 @@
+
+var ' a 1;
+say 39 58 32;
+in ' a;
+say $a 10 0;
+var 42 b 1;
+say 52 50 58 32;
+in 42 b;
+say $b 10 0;
+var 3.14 c 2.999;
+say 51 46 49 52 58 32;
+in 3.14 c;
+say $c 10 0;
+var ? d no;
+say 63 58 32;
+in ? d;
+say $d 10 0;
