@@ -7,10 +7,16 @@ this is a template for a library file
 
 function_names = []
 
+def init(main: dict[str,function]) -> None:
+	"""
+	this function is called when the library is loaded
+	main: dict with all the functions from the interpreter
+	"""
+	main["debug"]("loading library template")
 def call(words: list[str],main: dict[str,function]) -> None:
 	"""
 	words: list of words in the line
 	"""
 	match words[0]:
-		case _:
+		case "":
 			pass

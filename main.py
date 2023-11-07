@@ -253,6 +253,7 @@ def run(words: list[str]) -> None:
 				elif words[1] in libs: error(f"Library {words[1]} on line {curent_line} is allready imported")
 				elif words[1] + ".py" in listdir(f"simple_lib"):
 					libs[words[1]] = import_module(f"simple_lib.{words[1]}")
+					libs[words[1]].init(lib_import_var())
 				else: error(f"Library {words[1]} does not exist")
 			case "run": # run some code but change the variables written in it with their content
 				temp = []
@@ -388,11 +389,12 @@ def lib_import_var() -> dict:
 				"get_value": get_value,
 				"get_variable": get_variable,
 				"calculate": calculate,
+				"get_command": get_command,
 				# variables
 				"variables": variables,
 				"functions": functions,
 				"curent_line": curent_line,
-				"libs": libs
+				"libs": libs,
 			}
 def get_command(commands: list[str], pos: int) -> None:
 	"""get the command and return it"""
