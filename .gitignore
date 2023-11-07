@@ -3,6 +3,7 @@
 !code_demo/*.simple
 !test/*.simple
 text_to_ascii.py
+test/test_all.py
 
 ## Basic python gitignore
 
