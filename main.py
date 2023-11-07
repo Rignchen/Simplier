@@ -8,13 +8,15 @@ Some of the features of this language include:
 - Lines must end with ; and everything after it is ignored but still counted for the 60 character limit
 - No complex data types
 - Character are given using their ASCII value
+- You can't initialise function inside functions
 This language is interpreted by the Simplier Interpreter, which is written in Python.
 """
 
 ## interpreter settings
 warn_error = False # if True, warnings will be treated as errors
-debug_mode = True # if True, the interpreter will print information about what it's doing
-debug_mode_step = True # if True, the interpreter will wait for the user to press enter before executing the next line
+debug_mode = False # if True, the interpreter will print information about what it's doing
+debug_mode_step = False # if True, the interpreter will wait for the user to press enter before executing the next line
+debug_format_multi_line = False # if True, the interpreter will print debug messages on multiple lines
 interpreter_debug_mode = False # if True, the interpreter will print even more information about what it's doing, use to debug the interpreter
 
 #import
@@ -22,7 +24,7 @@ from os import listdir, path, chdir
 from importlib import import_module
 
 # define the variables
-function_names = ["var", "set", "say", "in", "if", "go", "fn", "end", "call", "lib"]
+function_names = ["var", "set", "say", "in", "if", "go", "fn", "end", "call", "lib", "run"]
 is_running = True
 variables = {} # name: value (tuple[type, value])		{'a': ("'", "65"), 'b': ("42", "42"), 'c': ("3.14", "3.14"), 'd': ("?", "yes")}
 functions = {} # name: code (list[str])
@@ -46,15 +48,75 @@ def warn(message: str = "", is_error: bool = warn_error) -> None:
 	if message == "": error("An unknow warning occured")
 	elif is_error: error(message + " (warn -> error)")
 	else: print("\033[93mWarning: " + str(message) + "\033[0m")
-def debug(message: str) -> None:
+def debug(message: str|dict, text: str = "") -> None:
 	"""print the debug message in blue, unless debug_mode is False"""
-	if debug_mode: print("\033[94mDebug: " + str(message) + "\033[0m")
+	if debug_mode:
+		if text == "": print("\033[94mDebug: " + str(message) + "\033[0m")
+		elif interpreter_debug_mode: print("\033[94mDebug: " + str(text) + str(message) + "\033[0m")
+		else: 
+			show = print_variables(message, text)
+			if show != "": print(f"\033[94mDebug: {show}\033[0m")
 def iprint(message: str) -> None:
 	"""print the message in green, used to debug the interpreter"""
-	if interpreter_debug_mode: print("\033[92m" + repr(message) + "\033[0m")
+	if interpreter_debug_mode and message != "": print("\033[92m" + repr(message) + "\033[0m")
 def tprint(message: str) -> None:
 	"""print the message in pink, used to debug the interpreter as a temporary print"""
 	print("\033[95m" + repr(message) + "\033[0m")
+def print_variables(variables: dict[str, any] | dict[str,list[str]] | dict[str,tuple[str,str]], message: str) -> str:
+	"""output the variables in a non string like format"""
+	if variables != {}: # if the dictionary is not empty
+		out = message
+		type = ""
+		for var in variables:
+			type = variables[var].__class__.__name__
+			break
+		if type == "tuple":
+			type_values = {}
+			for var in variables:
+				if variables[var][0] in type_values: type_values[variables[var][0]][var] = variables[var][1]
+				else: type_values[variables[var][0]] = {var: variables[var][1]}
+		if debug_format_multi_line:
+			match type:
+				case "module":
+					# {'time': <module 'simple_lib.time' ( from 'C:\\Users\\nilsh\\Documents\\buro\\codding\\Python\\Simplier\\simple_lib\\time.py')>, 'pomme': <module 'simple_lib.pomme' ( from 'C:\\Users\\nilsh\\Documents\\buro\\codding\\Python\\Simplier\\simple_lib\\pomme.py')>} -> '\n\ttime\ntpomme'
+					for i in variables: out += f"\n\t{i}"
+				case "list":
+					# {'pomme': ["set a 2", "set b $c = $a", "if $b go 5", "say 1", "say 10"]} -> '\n\tpomme:\n\t\tset a 2;\n\t\tset b $c = $a;\n\t\tif $b go 5;\n\t\tsay 1;\n\t\tsay 10;'
+					for i in variables:
+						out += f"\n\t{i}:"
+						for j in variables[i]: out += f"\n\t\t{j};"
+				case "tuple":
+					# {'a': ("'", "63"), 'c': ("42", "10"), 'd': ("3.14", "3.9"), 'b': ("'", "27"), 'e': ("?", "yes")} -> '\n\ta: 63\n\tb: 27\n42:\n\tc: 10\n3.14:\n\td: 3.9\n?:\n\te: yes'
+					for i in type_values:
+						out += f"\n\t{i}"
+						for j in type_values[i]: out += f"\n\t\t{j}: {type_values[i][j]}"
+				case _:iprint("unknown type" + type)
+		else:
+			match type:
+				case "module":
+					# {'time': <module 'simple_lib.time' ( from 'C:\\Users\\nilsh\\Documents\\buro\\codding\\Python\\Simplier\\simple_lib\\time.py')>, 'pomme': <module 'simple_lib.pomme' ( from 'C:\\Users\\nilsh\\Documents\\buro\\codding\\Python\\Simplier\\simple_lib\\pomme.py')>} -> [time, pomme]
+					out += "["
+					for i in variables: out += f"{i}, "
+					out = out[:-2] + "]"
+				case "list":
+					# {'pomme': ["set a 2", "set b $c = $a", "if $b go 5", "say 1", "say 10"]} -> {pomme: [set a 2; set b $c = $a; if $b go 5; say 1; say 10;]}
+					out += "{"
+					for i in variables:
+						out += f"{i}: ["
+						for j in variables[i]: out += f"{j}; "
+						out = out[:-1] + "], "
+					out = out[:-2] + "}"
+				case "tuple":
+					# {'a': ("'", "63"), 'c': ("42", "10"), 'd': ("3.14", "3.9"), 'b': ("'", "27"), 'e': ("?", "yes")} -> {': [a:63, b: 27], 42: [c: 10], 3.14: [d: 3.9], ?: [e: yes]}
+					out += "{"
+					for i in type_values:
+						out += f"{i}: ["
+						for j in type_values[i]: out += f"{j}: {type_values[i][j]}, "
+						out = out[:-2] + "], "
+					out = out[:-2] + "}"
+				case _:iprint("unknown type" + type)
+		return out
+	return ""
 
 ## code
 from os import system, name
@@ -179,9 +241,9 @@ def run(words: list[str]) -> None:
 
 					run(words)
 
-					debug(f"Variables: {variables}")
-					debug(f"Functions: {functions}")
-					debug(f"Library: {libs}")
+					debug(variables, "Variables: ")
+					debug(functions, "Functions: ")
+					debug(libs, "Library: ")
 					if debug_mode_step: input()
 				debug(f"end running function {function_name}")
 				curent_line = old_line
@@ -192,6 +254,14 @@ def run(words: list[str]) -> None:
 				elif words[1] + ".py" in listdir(f"simple_lib"):
 					libs[words[1]] = import_module(f"simple_lib.{words[1]}")
 				else: error(f"Library {words[1]} does not exist")
+			case "run": # run some code but change the variables written in it with their content
+				temp = []
+				i = 1
+				while i < len(words):
+					v = get_command(words, i)
+					temp.append(v[0])
+					i = v[1]
+				run(temp)
 			case _: # if the function is not a default one, may be a library function
 				error()
 	else:
@@ -324,7 +394,22 @@ def lib_import_var() -> dict:
 				"curent_line": curent_line,
 				"libs": libs
 			}
+def get_command(commands: list[str], pos: int) -> None:
+	"""get the command and return it"""
+	if commands[pos].startswith("$"):
+		v = get_variable(commands[pos][1:])
+		out = (str(get_value(v[0], v[1])))
+		match v[1]:
+			case "'": out = chr(int(out))
+			case "?": out = "yes" if bool(out) else "no"
+		if pos < (len(commands) - 1): 
+			v = get_command(commands, pos+1)
+			pos = v[1]
+			out += v[0]
+	else: out = commands[pos]
+	return (out, pos + 1)
 
+# run the code
 try:
 	while is_running and curent_line -1 < len(code):
 		curent_line += 1
@@ -335,8 +420,8 @@ try:
 
 		run(words)
 
-		debug(f"Variables: {variables}")
-		debug(f"Functions: {functions}")
-		debug(f"Library: {libs}")
+		debug(variables, "Variables: ")
+		debug(functions, "Functions: ")
+		debug(libs, "Library: ")
 		if debug_mode_step: input()
 except KeyboardInterrupt: error("KeyboardInterrupt")
