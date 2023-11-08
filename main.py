@@ -17,7 +17,7 @@ warn_error = False # if True, warnings will be treated as errors
 debug_mode = False # if True, the interpreter will print information about what it's doing
 debug_mode_step = False # if True, the interpreter will wait for the user to press enter before executing the next line
 debug_format_multi_line = False # if True, the interpreter will print debug messages on multiple lines
-interpreter_debug_mode = False # if True, the interpreter will print even more information about what it's doing, use to debug the interpreter
+interpreter_debug_mode = False # if True, the interpreter will print even more information about what it's doing however these messages aren't made to be easily readable, use to debug the interpreter
 
 #import
 from os import listdir, path, chdir
@@ -428,3 +428,4 @@ try:
 		debug(libs, "Library: ")
 		if debug_mode_step: input()
 except KeyboardInterrupt: error("KeyboardInterrupt")
+except BaseException as e: error(f"Unknow error happend on line {curent_line}: {e}")

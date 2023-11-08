@@ -8,6 +8,7 @@ default:
 	call <name>
 	lib <name>
 	in <type> <name> [<name>... if type = ']
+	run <value> <value> ...
 lib time:
 	now <varriable:3.14>
 	zzz <varriable:42|3.14>

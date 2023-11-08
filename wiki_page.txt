@@ -1,0 +1,204 @@
+{{infobox proglang
+|name=Simplier
+|author=Rignchen
+|year=[[:Category:2023|2023]]
+|memsys=variables
+|dimensions=One-dimensional languages
+|class=[[:Category:Turing complete|Turing complete]]
+|refimpl=[https://github.com/Rignchen/Simplier Simplier]
+|files=<code>.simple</code>,  <code>.simplier</code>
+}}
+'''Simplier''' was originaly made to be easy to read with lines having a max size for them to be allways on the screen and all commands beeing 2 to 4 character long, however it stopped being the case when empty lines where banned wich made the code harder to read
+
+==Code's specificity==
+* The code is case sensitive
+* The first line is used as a comment, it is the only line that's ignored by the limitations
+* A line of code (comment included) can't be longer than 60 characters
+* A line with more that 2 words can't be repeted
+* A line can't be empty, every line needs to have at least 1 character before the <code>;</code>
+* Each line needs to end with a <code>;</code>
+* Everything written after the <code>;</code> is considered as a comment
+* Characters are written as their ASCII code
+* The <code>$</code> is used to get the content of a variable, it needs to be placed before the variable name
+* The language supports library importation however it is not recommended to use them as they can denature the code
+
+==Variable Types==
+{| class="wikitable"
+!Name
+!Description
+|-
+|<code>'</code>
+|This type is used to store character
+|-
+|<code>42</code>
+|This type is used to store numbers
+|-
+|<code>3.14</code>
+|This type is used to store decimal numbers
+|-
+|<code>?</code>
+|This type is used to store boolean values (yes/no)
+|}
+
+==Commands==
+{| class="wikitable"
+!Name
+!Description
+!Syntaxe
+|-
+|var
+|This command is used to declare a variable.
+|var <code><type></code> <code><name></code> <code><value></code>
+|-
+|set
+|This command is used to change the value of a variable, it's also used to calculate and make boolean operations.
+|set <code><name></code> <code><value></code> [<code><operation></code> <code><value></code>...]
+|-
+|say
+|This command is used to display a message or a variable value in the console, note that it doesn't add a new line at the end meaning that the next message will be displayed on the same line.
+|say <code><value></code> <code><value></code> ...
+|-
+|if
+|This command is used to test a value, the code after the <code>if</code> will be executed only if the value is true.
+|if <code><value:?></code> <code><command></code>
+|-
+|go
+|This command is used to jump to a specific line, if used in a function it will jump to the function line instead of the main code.
+|go <code><value:42></code>
+|-
+|fn
+|This can be used to declare a function, every line written between the <code>fn</code> and the <code>end</code> will be considered as the function code, note that it is not possible to declare a function inside another function.
+|fn <code><name></code>
+|-
+|call
+|This command is used to execute the content of the function
+|call <code><name></code>
+|-
+|lib
+|This command is used to import a library, the library are stored in the "simple_lib" folder next to the interpreter. When possible it is recommended not to use libraries as they can denature the code.
+|lib <code><name></code>
+|-
+|in
+|This command is used to get the user input, if the type is <code>'</code> you can give multiple variable names and each character will be stored in a variable, note that if the input is bigger than the number of variables, the interpreter will return an error.
+|in <code><type></code> <code><name></code> [<code><name></code>... if type = ']
+|-
+|run
+|This command is used to execute another command, the command will be executed after the variables are replaced by their values, note that the value after a variable will be past at the end of the variable value, meaning that you can use multiple variables to create a word, if the last lettre of your word is a variable, you can add 2 spaces to separate the word from the next one.
+|run <code><value></code> <code><command></code> ...
+|}
+To take out the content of a variable, simply add a <code>$</code> before the variable name
+
+==Examples==
+
+===[[Hello World!]]===
+ hello world! <- this line is a comment, as well as everything after the ;
+ fn main;
+ say 72 101 108 108 111 32; print "Hello"
+ say 119 111 114 108 100 33; print "world!"
+ end;
+ call main; print "Hello world!" by running the main function
+this version of the hello world program uses function and multiple lines to print the message as well as comments to show how to use them, however it is possible to write the same program in a single line:
+ say 72 101 108 108 111 32 119 111 114 108 100 33;
+but don't forget that this needs to be on the second line of the file as the first line is used as a comment
+
+===[[Truth Machine]]===
+ The user can enter a number, if the number is 0 it will print 0, if the number is 1 it will print 1 infinity
+ var 42 a 0;
+ var 42 1 1;
+ var ? b no;
+ in 42 a;
+ set b $a = $1;
+ say $a;
+ if $b go 7;
+
+===[[Cat program]]===
+ this is a cat program, it will print out everything you type in
+ var ' a 0;
+ var ' b 0;
+ var ' c 0;
+ var ' d 0;
+ var ' e 0;
+ var ' f 0;
+ var ' g 0;
+ var ' h 0;
+ var ' i 0;
+ var ' j 0;
+ var ' k 0;
+ var ' l 0;
+ var ' m 0;
+ var ' n 0;
+ var ' o 0;
+ var ' p 0;
+ var ' q 0;
+ var ' r 0;
+ var ' s 0;
+ var ' t 0;
+ var ' u 0;
+ var ' v 0;
+ var ' w 0;
+ var ' x 0;
+ var ' y 0;
+ var ' z 0;
+ var ' A 0;
+ in ' a b c d e f g h i j k l m n o p q r s t u v w x y z A;
+ say $a $b $c $d $e $f $g $h $i $j $k $l $m $n $o $p $q $r;
+ say $s $t $u $v $w $x $y $z $A 10;
+ set a 0;
+ set b 0;
+ set c 0;
+ set d 0;
+ set e 0;
+ set f 0;
+ set g 0;
+ set h 0;
+ set i 0;
+ set j 0;
+ set k 0;
+ set l 0;
+ set m 0;
+ set n 0;
+ set o 0;
+ set p 0;
+ set q 0;
+ set r 0;
+ set s 0;
+ set t 0;
+ set u 0;
+ set v 0;
+ set w 0;
+ set x 0;
+ set y 0;
+ set z 0;
+ set A 0;
+ go 29;
+this program is pretty big, this is to give the biggest size possible to the user's input (27 character), it is possible to make it in 5 lines if we don't care about the size of the input:
+ a smaller version of the cat program that have a maximum input size of 1 character
+ var ' a 0;
+ in ' a;
+ say $a;
+ set a 0;
+ go 3;
+
+==Libraries==
+as the program supports libraries, I think it is important to talk about them here
+
+===Time===
+The time library makes it able to get the current time and make break in the code
+{| class="wikitable"
+!Command
+!Description
+!Syntaxe
+|-
+|<code>now</code>
+|This command is used to get the current unix time and store it in a 42 or 3.14 variable
+|now <code><variable></code>
+|-
+|<code>zzz</code>
+|This command is used to wait for a specific amount of time, this duration can be in seconds or milliseconds
+|zzz <code><value></code>
+|}
+It's at this time the only library existing but another one called "bp" but it's still in development and I won't talk about it before it's finished
+
+[[Category:Languages]]
+[[Category:2023]]
+[[Category:Turing complete]]
