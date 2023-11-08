@@ -15,3 +15,4 @@ lib time:
 lib bp:
 	cvrt <varriable> <varriable>
 	app <value> <value> ...
+	del <varriable>

@@ -5,7 +5,7 @@ time library for the simplier esoteric language
 def init(main: dict) -> None: main["libs"]["bp"] = _main(main)
 
 class _main:
-	function_names = ["cvrt","add"]
+	function_names = ["cvrt","add","del"]
 	def __init__(self, main) -> None:
 		#prints
 		self.debug = main["debug"]
@@ -75,4 +75,8 @@ class _main:
 				if len(words) < 2: self.error(f"add on line {self.curent_line} takes at least 1 argument")
 				self.code[self.curent_line-3] += " " + " ".join(words[1:])
 				self.iprint(self.code[self.curent_line-3])
-
+			case "del": # delete a variable
+				# syntaxe: del <varriable>
+				if len(words) != 2: self.error(f"del on line {self.curent_line} takes 1 argument not {len(words)}")
+				if words[1] not in self.variables: self.error(f"variable {words[1]} does not exist on line {self.curent_line}")
+				del self.variables[words[1]]
