@@ -14,3 +14,4 @@ lib time:
 	zzz <varriable:42|3.14>
 lib bp:
 	cvrt <varriable> <varriable>
+	app <value> <value> ...

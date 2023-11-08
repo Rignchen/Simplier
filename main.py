@@ -31,6 +31,7 @@ functions = {} # name: code (list[str])
 libs = {} # name: import
 curent_line = 1
 local_path = path.dirname(path.realpath(__file__))
+is_function_running = False
 
 # error and warning functions
 def stop():
@@ -232,6 +233,7 @@ def run(words: list[str]) -> None:
 				old_line, curent_line = curent_line, 1
 				function_name = words[1]
 				debug(f"start running function {function_name}")
+				is_function_running = True
 				while is_running and curent_line -1 < len(functions[function_name]):
 					curent_line += 1
 					line = functions[function_name][curent_line-2]
@@ -246,6 +248,7 @@ def run(words: list[str]) -> None:
 					debug(libs, "Library: ")
 					if debug_mode_step: input()
 				debug(f"end running function {function_name}")
+				is_function_running = False
 				curent_line = old_line
 			case "lib": # import a library
 				#syntax: lib <name>
@@ -396,6 +399,9 @@ def lib_import_var() -> dict:
 		"functions": functions,
 		"curent_line": curent_line,
 		"libs": libs,
+		"is_running": is_running,
+		"is_function_running": is_function_running,
+		"code": code,
 	}
 def get_command(commands: list[str], pos: int) -> None:
 	"""get the command and return it"""
@@ -428,4 +434,5 @@ try:
 		debug(libs, "Library: ")
 		if debug_mode_step: input()
 except KeyboardInterrupt: error("KeyboardInterrupt")
-except BaseException as e: error(f"Unknow error happend on line {curent_line}: {e}")
+except BaseException as e:
+	if is_running: error(f"Unknow error happend on line {curent_line}: {e}")

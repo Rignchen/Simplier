@@ -5,13 +5,14 @@ time library for the simplier esoteric language
 def init(main: dict) -> None: main["libs"]["bp"] = _main(main)
 
 class _main:
-	function_names = ["cvrt"]
+	function_names = ["cvrt","add"]
 	def __init__(self, main) -> None:
 		#prints
 		self.debug = main["debug"]
 		self.error = main["error"]
 		self.warn = main["warn"]
 		self.tprint = main["tprint"]
+		self.iprint = main["iprint"]
 
 		# start loading the library
 		self.debug("loading bypass library")
@@ -28,6 +29,8 @@ class _main:
 		#variables
 		self.curent_line = main["curent_line"]
 		self.variables = main["variables"]
+		self.is_function_running = main["is_function_running"]
+		self.code = main["code"]
 
 		#look for the function
 		match words[0]:
@@ -66,24 +69,10 @@ class _main:
 					case "?": 
 						if v2[1] == "'": self.variables[words[2]] = ("'", str(ord(v1[0][0])))
 						else: self.error(f"cannot convert {v1[1]} to {v2[1]} on line {self.curent_line}")
-			case "add":
-				pass
-			case "del":
-				pass
+			case "add": # add some code to the end of the 
+				# syntaxe: cvrt <varriable> <variable>
+				if self.is_function_running: self.error("add command cannot be used inside a function")
+				if len(words) < 2: self.error(f"add on line {self.curent_line} takes at least 1 argument")
+				self.code[self.curent_line-3] += " " + " ".join(words[1:])
+				self.iprint(self.code[self.curent_line-3])
 
-"""
-' 42 -> ascii '
-' 3.14 -> ascii '
-' ? ->
-	if y: yes
-	elif n: no
-	else: error
-
-42 ' -> acii 42
-42 3.14 -> float 42
-
-3.14 ' -> ascii 3.14
-3.14 42 -> int 3.14
-
-? ' -> yes/no
-"""
