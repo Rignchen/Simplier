@@ -122,7 +122,7 @@ def print_variables(variables: dict[str, any] | dict[str,list[str]] | dict[str,t
 from os import system, name
 system("cls" if name == "nt" else "clear")
 file_path = input("Enter the file path: ")
-if not file_path.endswith(".simple"): error	("File must be a .simple file")
+if not file_path.endswith((".simple",".simplier")): error("File must be a .simple file")
 
 try: 
 	with open(file_path, "r") as file: code = file.read().split("\n")
