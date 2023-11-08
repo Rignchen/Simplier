@@ -197,7 +197,26 @@ The time library makes it able to get the current time and make break in the cod
 |This command is used to wait for a specific amount of time, this duration can be in seconds or milliseconds
 |zzz <code><value></code>
 |}
-It's at this time the only library existing but another one called "bp" but it's still in development and I won't talk about it before it's finished
+
+===BP===
+The bp (or bypass) library makes it able to bypass the limitations of the language, it is not recommended to use it as it highly denature the code
+{| class="wikitable"
+!Command
+!Description
+!Syntaxe
+|-
+|<code>cvrt</code>
+|This command is used to convert the content of a variable to another type
+|cvrt <code><variable></code> <code><variable></code>
+|-
+|<code>add</code>
+|This command is used to add value at the end of the line before itself
+|add <code><value></code> <code><value></code> ...
+|-
+|<code>del</code>
+|This command is used to delete a variable
+|del <code><variable></code>
+|}
 
 [[Category:Languages]]
 [[Category:2023]]
