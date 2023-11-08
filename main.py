@@ -262,6 +262,7 @@ def run(words: list[str]) -> None:
 					v = get_command(words, i)
 					if v[0] != "":temp.append(v[0])
 					i = v[1] + 1
+				debug(f"Run: {' '.join(temp)};")
 				run(temp)
 			case _: # if the function is not a default one, may be a library function
 				error()

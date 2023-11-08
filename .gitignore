@@ -1,9 +1,11 @@
-# every .simple file except the ones in the "code_demo" directory
+# every .simple file except the ones in the "code_demo" and "test" directory
 *.simple
 !code_demo/*.simple
 !test/*.simple
-text_to_ascii.py
+# auto generated file
 test/test_all.py
+# all files made for me to code faster :)
+my_code/
 
 ## Basic python gitignore
 
