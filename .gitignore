@@ -4,6 +4,7 @@
 !test/*.simple
 # auto generated file
 test/test_all.py
+*.zip
 # all files made for me to code faster :)
 my_code/
 

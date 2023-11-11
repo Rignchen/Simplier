@@ -10,6 +10,8 @@
 }}
 '''Simplier''' was originaly made to be easy to read with lines having a max size for them to be allways on the screen and all commands beeing 2 to 4 character long, however it stopped being the case when empty lines where banned wich made the code harder to read
 
+if you want to test the simplier language for yourself, [https://github.com/Rignchen/Simplier/releases/download/interpreter/Simplier.python.interpreter.zip here's a link to the python interpreter]
+
 ==Code's specificity==
 * The code is case sensitive
 * The first line is used as a comment, it is the only line that's ignored by the limitations
