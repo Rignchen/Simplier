@@ -12,12 +12,20 @@ Some of the features of this language include:
 This language is interpreted by the Simplier Interpreter, which is written in Python.
 """
 
+def contain(list: list[str], value: str|tuple[str]) -> bool:
+	"""return True if the list contain the value"""
+	if isinstance(value, tuple):
+		for i in value:
+			if i in list: return True
+		return False
+	else: return value in list
+
 ## interpreter settings
-warn_error = False # if True, warnings will be treated as errors
-debug_mode = False # if True, the interpreter will print information about what it's doing
-debug_mode_step = False # if True, the interpreter will wait for the user to press enter before executing the next line
-debug_format_multi_line = False # if True, the interpreter will print debug messages on multiple lines
-interpreter_debug_mode = False # if True, the interpreter will print even more information about what it's doing however these messages aren't made to be easily readable, use to debug the interpreter
+warn_error = contain(argv,("-w","--warn_error")) # if True, warnings will be treated as errors
+debug_mode = contain(argv,("-d","--debug")) # if True, the interpreter will print information about what it's doing
+debug_mode_step = contain(argv,("-s","--step")) # if True, the interpreter will wait for the user to press enter before executing the next line
+debug_format_multi_line = contain(argv,("-m","--multi_line")) # if True, the interpreter will print debug messages on multiple lines
+interpreter_debug_mode = contain(argv,("-i","--interpreter_debug")) # if True, the interpreter will print even more information about what it's doing however these messages aren't made to be easily readable, use to debug the interpreter
 
 #import
 from os import listdir, path, chdir
@@ -120,14 +128,6 @@ def print_variables(variables: dict[str, any] | dict[str,list[str]] | dict[str,t
 		return out
 	return ""
 
-def contain(list: list[str], value: str|tuple[str]) -> bool:
-	"""return True if the list contain the value"""
-	if isinstance(value, tuple):
-		for i in value:
-			if i in list: return True
-		return False
-	else: return value in list
-
 ## code
 from os import system, name
 if not contain(argv,("-k","--keep")): system("cls" if name == "nt" else "clear")
@@ -142,8 +142,6 @@ except FileNotFoundError: error(f"File {file_path} does not exist")
 # set the path of execution to the location of the file
 # this is to ensure that the file can be run from any location and won't mess up the import
 chdir(path.dirname(path.realpath(__file__)))
-
-warn("This language is still in development, so it may not work as expected", False)
 
 # Remove empty lines and comments, return error if line is too long, repeated or empty
 if len(code) > 1: code = code[1:]
