@@ -22,6 +22,7 @@ interpreter_debug_mode = False # if True, the interpreter will print even more i
 #import
 from os import listdir, path, chdir
 from importlib import import_module
+from sys import argv
 
 # define the variables
 function_names = ["var", "set", "say", "in", "if", "go", "fn", "end", "call", "lib", "run"]
@@ -119,10 +120,19 @@ def print_variables(variables: dict[str, any] | dict[str,list[str]] | dict[str,t
 		return out
 	return ""
 
+def contain(list: list[str], value: str|tuple[str]) -> bool:
+	"""return True if the list contain the value"""
+	if isinstance(value, tuple):
+		for i in value:
+			if i in list: return True
+		return False
+	else: return value in list
+
 ## code
 from os import system, name
-system("cls" if name == "nt" else "clear")
-file_path = input("Enter the file path: ")
+if not contain(argv,("-k","--keep")): system("cls" if name == "nt" else "clear")
+if len(argv) == 1: file_path = input("Enter the file path: ")
+else: file_path = argv[1]
 if not file_path.endswith((".simple",".simplier")): error("File must be a .simple file")
 
 try: 
