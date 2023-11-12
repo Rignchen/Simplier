@@ -134,7 +134,9 @@ from os import system, name
 if not contain(argv,("-k","--keep")): system("cls" if name == "nt" else "clear")
 if len(argv) == 1: file_path = input("Enter the file path: ")
 else: file_path = argv[1]
-if not file_path.endswith((".simple",".simplier")): error("File must be a .simple file")
+if file_path.endswith((".simple",".simplier")): pass
+elif file_path + ".simple" in listdir("code_demo"): file_path = f"code_demo/{file_path}.simple"
+else: error("File must be a .simple file")
 
 try: 
 	with open(file_path, "r") as file: code = file.read().split("\n")
