@@ -181,6 +181,29 @@ this program is pretty big, this is to give the biggest size possible to the use
  set a 0;
  go 3;
 
+===[[Looping Counter]]===
+ .
+ var 42 max 0;
+ var 42 count 0;
+ var 42 count_copy 0;
+ var 42 0 0;
+ var ' * 42;
+ var ? test no;
+ fn print;
+ say $*;
+ set count_copy $count_copy - 1;
+ set test $count_copy > $0;
+ if $test go 2;
+ say 10;
+ end;
+ in 42 max;
+ set count $count + 1;
+ set count_copy $count;
+ call print;
+ set test $count < $max;
+ if $test go 16;
+this program will ask the user for a number and loop until it reaches that number, each loop prints 1 * more than the previous one
+
 ==Libraries==
 as the program supports libraries, I think it is important to talk about them here
 
