@@ -1,0 +1,7 @@
+
+var 42 a 0;
+var 42 b 1;
+say $a 10 $b 10;
+set a $a + $b;
+set b $b + $a;
+go 4;
