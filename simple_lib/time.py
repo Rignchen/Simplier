@@ -43,8 +43,6 @@ class _main:
 				if len(words) > 2: self.error(f"zzz on line {self.curent_line} must have 1 arguments")
 				if words[1].startswith("$"): v = self.get_variable(words[1][1:])
 				else: v = [words[1], "3.14"]
-				self.tprint("yyy" + repr(v))
 				test, msg = self.is_value_valid(v[0], v[1])
 				if not test: self.error(msg)
-				self.tprint("zzz" + repr(v[1]))
 				time.sleep(float(self.get_value(words[1], "3.14")))
