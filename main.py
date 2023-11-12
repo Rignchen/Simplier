@@ -12,6 +12,11 @@ Some of the features of this language include:
 This language is interpreted by the Simplier Interpreter, which is written in Python.
 """
 
+#import
+from os import listdir, path, chdir
+from importlib import import_module
+from sys import argv
+
 def contain(list: list[str], value: str|tuple[str]) -> bool:
 	"""return True if the list contain the value"""
 	if isinstance(value, tuple):
@@ -21,16 +26,12 @@ def contain(list: list[str], value: str|tuple[str]) -> bool:
 	else: return value in list
 
 ## interpreter settings
+clear_line = contain(argv,("-c","--clear_line")) # if True, the interpreter will clear the shell after each line
 warn_error = contain(argv,("-w","--warn_error")) # if True, warnings will be treated as errors
 debug_mode = contain(argv,("-d","--debug")) # if True, the interpreter will print information about what it's doing
 debug_mode_step = contain(argv,("-s","--step")) # if True, the interpreter will wait for the user to press enter before executing the next line
 debug_format_multi_line = contain(argv,("-m","--multi_line")) # if True, the interpreter will print debug messages on multiple lines
 interpreter_debug_mode = contain(argv,("-i","--interpreter_debug")) # if True, the interpreter will print even more information about what it's doing however these messages aren't made to be easily readable, use to debug the interpreter
-
-#import
-from os import listdir, path, chdir
-from importlib import import_module
-from sys import argv
 
 # define the variables
 function_names = ["var", "set", "say", "in", "if", "go", "fn", "end", "call", "lib", "run"]
@@ -243,6 +244,7 @@ def run(words: list[str]) -> None:
 				debug(f"start running function {function_name}")
 				is_function_running = True
 				while is_running and curent_line -1 < len(functions[function_name]):
+					if clear_line: system("cls" if name == "nt" else "clear")
 					curent_line += 1
 					line = functions[function_name][curent_line-2]
 					words = line.split(" ")
@@ -385,9 +387,13 @@ def calculate(values: list[str], type: str):
 def lib_import_var() -> dict:
 	"""return all variables and functions of the interpreter"""
 	return {
+		"args": argv[1:],
 		# debug
+		"clear_line": clear_line,
+		"warn_error": warn_error,
 		"debug_mode": debug_mode,
 		"debug_mode_step": debug_mode_step,
+		"debug_format_multi_line": debug_format_multi_line,
 		"interpreter_debug_mode": interpreter_debug_mode,
 		# functions
 		"stop": stop,
@@ -429,6 +435,7 @@ def get_command(commands: list[str], pos: int) -> None:
 # run the code
 try:
 	while is_running and curent_line -1 < len(code):
+		if clear_line: system("cls" if name == "nt" else "clear")
 		curent_line += 1
 		line = code[curent_line-2]
 		words = line.split(" ")
