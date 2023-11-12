@@ -244,7 +244,6 @@ def run(words: list[str]) -> None:
 				debug(f"start running function {function_name}")
 				is_function_running = True
 				while is_running and curent_line -1 < len(functions[function_name]):
-					if clear_line: system("cls" if name == "nt" else "clear")
 					curent_line += 1
 					line = functions[function_name][curent_line-2]
 					words = line.split(" ")
@@ -252,6 +251,7 @@ def run(words: list[str]) -> None:
 					debug(f"Fn Line: {curent_line}")
 
 					run(words)
+					if clear_line: system("cls" if name == "nt" else "clear")
 
 					debug(variables, "Variables: ")
 					debug(functions, "Functions: ")
@@ -277,8 +277,6 @@ def run(words: list[str]) -> None:
 					i = v[1] + 1
 				debug(f"Run: {' '.join(temp)};")
 				run(temp)
-			case _: # if the function is not a default one, may be a library function
-				error()
 	else:
 		# if the function is not a default one, it may be a library function
 		for lib in libs:
@@ -369,10 +367,10 @@ def calculate(values: list[str], type: str):
 						elif calc[0].startswith("$") and calc[2].startswith("$"):
 							#if there's a varriable, test if the value and type are the same
 							match calc[1]:
-								case "=": calc = ["yes" if get_variable(calc[0][1:]) == get_variable(calc[2][1:]) else "no"]
-								case "!": calc = ["yes" if get_variable(calc[0][1:]) != get_variable(calc[2][1:]) else "no"]
-								case ">": calc = ["yes" if get_variable(calc[0][1:]) > get_variable(calc[2][1:]) else "no"]
-								case "<": calc = ["yes" if get_variable(calc[0][1:]) < get_variable(calc[2][1:]) else "no"]
+								case "=": calc = ["yes" if get_value(calc[0],"") == get_value(calc[2],"") else "no"]
+								case "!": calc = ["yes" if get_value(calc[0],"") != get_value(calc[2],"") else "no"]
+								case ">": calc = ["yes" if get_value(calc[0],"") > get_value(calc[2],"") else "no"]
+								case "<": calc = ["yes" if get_value(calc[0],"") < get_value(calc[2],"") else "no"]
 								case _: error(f"Unknown operator between {type} {calc[1]} on line {curent_line}")
 					case _: return False, f"Unknown type {type} on line {curent_line}"
 			except ZeroDivisionError: error(f"Can't divide by 0 on line {curent_line}")
@@ -435,7 +433,6 @@ def get_command(commands: list[str], pos: int) -> None:
 # run the code
 try:
 	while is_running and curent_line -1 < len(code):
-		if clear_line: system("cls" if name == "nt" else "clear")
 		curent_line += 1
 		line = code[curent_line-2]
 		words = line.split(" ")
@@ -443,6 +440,7 @@ try:
 		debug(f"Line: {curent_line}")
 
 		run(words)
+		if clear_line: system("cls" if name == "nt" else "clear")
 
 		debug(variables, "Variables: ")
 		debug(functions, "Functions: ")
