@@ -4,8 +4,11 @@ files library for the simplier esoteric language
 
 def init(main: dict) -> None: main["libs"]["files"] = _main(main)
 
+from genericpath import exists, isdir
+from os import path, remove, rmdir, walk
+
 class _main:
-	function_names = ["look", "pen", "free", "len"]
+	function_names = ["look", "pen", "free", "len", "del"]
 	def __init__(self, main) -> None:
 		#prints
 		self.debug = main["debug"]
@@ -21,14 +24,14 @@ class _main:
 		self.get_value = main["get_value"]
 		
 		#variables
-		self.file_path = main["file_location"]
+		self.file_path: str = main["file_location"].replace("\\","/")
 
 		# finish loading the library
 		self.debug("files library loaded successfully")
 	def call(self,words: list[str],main: dict) -> None:
 		#variables
-		self.curent_line = main["curent_line"]
-		self.variables = main["variables"]
+		self.curent_line: int = main["curent_line"]
+		self.variables: dict[str,tuple[str,str]] = main["variables"]
 
 		#look for the function
 		match words[0]:
@@ -77,6 +80,29 @@ class _main:
 						self.variables[words[1]] = a # set the variable to the length of the file
 				except FileNotFoundError:
 					self.error(f"file {file_name} not found")
+			case "del": # delete a file or a folder
+				# syntax: del <path> <path> <path>...
+				if len(words) < 2: self.error(f"del on line {self.curent_line} needs at least 1 argument")
+				file_name = self.get_name(words[1:])
+				if file_name.endswith(("/", "\\")):
+					if not exists(file_name): self.error(f"Directory {file_name} not found")
+					if not isdir(file_name): self.error(f"{file_name} is not a directory")
+					for root, _, files in walk(file_name):
+						for name in files: 
+							try: remove(path.join(root, name))
+							except PermissionError: self.error(f"Permission denied for {path.join(root, name)}")
+					for root, dirs, _ in walk(file_name):
+						for name in dirs: rmdir(path.join(root, name))
+					rmdir(file_name)
+				else:
+					try: remove(file_name)
+					except FileNotFoundError:
+						self.error(f"File {file_name} not found")
+					except IsADirectoryError:
+						self.error(f"{file_name} is a folder")
+					except PermissionError:
+						self.error(f"Permission denied for {file_name}")
+		pass
 	def get_name(self, chr_list: list[str]) -> str:
 		out = "".join([chr(int(self.get_value(word,"'"))) for word in chr_list])
 		if not out.startswith(("/","\\")): out = self.file_path + "/" + out
