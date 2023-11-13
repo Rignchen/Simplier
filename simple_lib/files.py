@@ -5,7 +5,7 @@ files library for the simplier esoteric language
 def init(main: dict) -> None: main["libs"]["files"] = _main(main)
 
 from genericpath import exists, isdir
-from os import path, remove, rmdir, walk
+from os import mkdir, path, remove, rmdir, walk
 
 class _main:
 	function_names = ["look", "pen", "free", "len", "del"]
@@ -68,7 +68,23 @@ class _main:
 				# syntax: free <path> <path> <path>...
 				if len(words) < 3: self.error(f"free on line {self.curent_line} needs at least 2 arguments")
 				file_name = self.get_name(words[1:])
-				open(file_name,"w+",encoding="utf-8").close()
+				file_name = file_name.replace("\\","/")
+				if "/" in file_name:
+					all_files = file_name.split("/")
+					j = ""
+					for i in range(len(all_files)): # create the folders
+						j += all_files[i]
+						if not exists(j):
+							if not file_name.endswith("/"):
+								if i < len(all_files) -1: mkdir(j)
+							else: mkdir(j)
+						j += "/"
+					if not file_name.endswith("/"):
+						try: open(file_name,"w+",encoding="utf-8").close()
+						except PermissionError: self.error(f"Permission denied for {file_name}")
+				else:
+					try: open(file_name,"w+",encoding="utf-8").close()
+					except PermissionError: self.error(f"Permission denied for {file_name}")
 			case "len": # get the length of a file
 				# syntax: len <variable:42> <path> <path> <path>...
 				if len(words) < 3: self.error(f"len on line {self.curent_line} needs at least 2 arguments")
