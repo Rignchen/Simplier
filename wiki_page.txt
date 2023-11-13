@@ -269,7 +269,7 @@ The Files library can be used to read and write , it is not recommended to use i
 |pen <varriable:'> <value> <value> ...
 |-
 |<code>free</code>
-|This command empty a file, it can also be used to create a new file
+|This command empty a file, it can also be used to create a new file and/or folder
 |free <value> <value> ...
 |-
 |<code>len</code>
