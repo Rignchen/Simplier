@@ -204,6 +204,16 @@ this program is pretty big, this is to give the biggest size possible to the use
  if $test go 16;
 this program will ask the user for a number and loop until it reaches that number, each loop prints 1 * more than the previous one
 
+===[[Fibonacci sequence]]===
+ 0 1 1 2 3 5 8 ...
+ var 42 a 0;
+ var 42 b 1;
+ say $a 10 $b 10;
+ set a $a + $b;
+ set b $b + $a;
+ go 4;
+This print the Fibonacci sequence
+
 ==Libraries==
 as the program supports libraries, I think it is important to talk about them here
 
@@ -241,6 +251,30 @@ The bp (or bypass) library makes it able to bypass the limitations of the langua
 |<code>del</code>
 |This command is used to delete a variable
 |del <code><variable></code>
+|}
+
+===Files===
+The Files library can be used to read and write , it is not recommended to use it as it highly denature the code
+{| class="wikitable"
+!Command
+!Description
+!Syntaxe
+|-
+|<code>look</code>
+|This command the character at a specific position in a file and store it in a variable
+|look <varriable:'> <value:42> <value> <value> ...
+|-
+|<code>pen</code>
+|This command write a character at the end of a file
+|pen <varriable:'> <value> <value> ...
+|-
+|<code>free</code>
+|This command empty a file, it can also be used to create a new file
+|free <value> <value> ...
+|-
+|<code>len</code>
+|This command return the length of a file
+|len <varriable:42> <value> <value> ...
 |}
 
 [[Category:Languages]]
