@@ -13,7 +13,7 @@ This language is interpreted by the Simplier Interpreter, which is written in Py
 """
 
 #import
-from os import listdir, path, chdir
+from os import listdir, path, chdir, getcwd
 from importlib import import_module
 from sys import argv
 
@@ -34,6 +34,7 @@ debug_format_multi_line = contain(argv,("-m","--multi_line")) # if True, the int
 interpreter_debug_mode = contain(argv,("-i","--interpreter_debug")) # if True, the interpreter will print even more information about what it's doing however these messages aren't made to be easily readable, use to debug the interpreter
 
 # define the variables
+file_location = getcwd()
 function_names = ["var", "set", "say", "in", "if", "go", "fn", "end", "call", "lib", "run"]
 is_running = True
 variables = {} # name: value (tuple[type, value])		{'a': ("'", "65"), 'b': ("42", "42"), 'c': ("3.14", "3.14"), 'd': ("?", "yes")}
@@ -48,6 +49,7 @@ def stop():
 	"""stop the program"""
 	global is_running
 	is_running = False
+	if interpreter_debug_mode: raise BaseException("Program stopped")
 	from sys import exit
 	exit()
 def error(message: str = f"An unknow error occured on line {curent_line}") -> None:
@@ -139,7 +141,7 @@ elif file_path + ".simple" in listdir("code_demo"): file_path = f"code_demo/{fil
 else: error("File must be a .simple file")
 
 try: 
-	with open(file_path, "r") as file: code = file.read().split("\n")
+	with open(file_path, "r",encoding="utf-8") as file: code = file.read().split("\n")
 except FileNotFoundError: error(f"File {file_path} does not exist")
 
 # set the path of execution to the location of the file
@@ -389,6 +391,8 @@ def lib_import_var() -> dict:
 	return {
 		"args": argv[1:],
 		# debug
+		"file_location": file_location,
+		"file_path": file_path,
 		"clear_line": clear_line,
 		"warn_error": warn_error,
 		"debug_mode": debug_mode,
